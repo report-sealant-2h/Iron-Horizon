@@ -231,7 +231,9 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
 <body>
 <div id="splash" style="position:fixed;inset:0;z-index:9999;background:#15100c;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  transition:opacity .6s ease;font-family:Georgia,'Times New Roman',serif;">
+  transition:opacity .6s ease;font-family:Georgia,'Times New Roman',serif;cursor:pointer;"
+  onclick="(function(){var sp=document.getElementById('splash');if(!sp)return;sp.style.opacity='0';setTimeout(function(){sp.remove();},650);})()"
+  title="Tap to begin">
   <canvas id="splashicon" width="120" height="120" style="border-radius:26px;margin-bottom:22px;
     box-shadow:0 0 40px rgba(200,146,26,0.3);"></canvas>
   <div style="color:#c8921a;font-size:22px;letter-spacing:.12em;font-variant:small-caps;margin-bottom:6px;">Iron Horizon</div>
@@ -239,10 +241,12 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
   <div style="margin-top:32px;display:flex;gap:7px;">
     <div class="sdot"></div><div class="sdot" style="animation-delay:.2s"></div><div class="sdot" style="animation-delay:.4s"></div>
   </div>
+  <div style="margin-top:28px;color:#6d5c40;font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:0;animation:fadeHint 1s ease 1.5s forwards;">Tap to begin</div>
   <style>
     .sdot{width:7px;height:7px;border-radius:50%;background:#c8921a;opacity:.3;
       animation:sdot .9s ease-in-out infinite alternate;}
     @keyframes sdot{to{opacity:.9;transform:translateY(-4px);}}
+    @keyframes fadeHint{to{opacity:.6;}}
   </style>
   <script>
     try{(function(){var c=document.getElementById('splashicon');if(!c)return;
@@ -1772,9 +1776,6 @@ d.onclick=()=>{CITY=c;document.querySelectorAll('.city').forEach(x=>x.classList.
 box.appendChild(d);});})();
 $('startbtn').onclick=()=>{
 S.money=CITY.cash;genTerrain();placeHQ();
-// Dismiss the loading splash
-(function(){var sp=document.getElementById('splash');if(!sp)return;
-sp.style.opacity='0';setTimeout(function(){sp.remove();},650);})();
 resizePlotToClaimedBounds();offerExpansionPlots();
 rebuildRivalVisuals();
 $('intro').style.display='none';S.started=true;
