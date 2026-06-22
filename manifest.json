@@ -1,0 +1,26 @@
+{
+  "name": "Iron Horizon: Director's Cut",
+  "short_name": "Iron Horizon",
+  "description": "An industrial tycoon game spanning 1850 to 1950. Build your empire, manage your city, and reach for the stars.",
+  "start_url": "./iron-horizon-v4.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#15100c",
+  "theme_color": "#15100c",
+  "categories": ["games"],
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
