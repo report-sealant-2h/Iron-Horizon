@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <!-- PWA: iOS home screen support -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Iron Horizon">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#15100c">
@@ -88,16 +88,15 @@ if('serviceWorker' in navigator){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 :root{--ink:#27201a;--paper:#ece2c8;--paper2:#ddcfa9;--brass:#a8832f;--brassB:#d2ab51;
---green:#3c7a5e;--red:#a03426;--sab:env(safe-area-inset-bottom,0px);--sat:env(safe-area-inset-top,0px);}
+--green:#3c7a5e;--red:#a03426;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100vh;height:100dvh;overflow:hidden;background:#15100c;
 font-family:Georgia,'Times New Roman',serif;color:var(--ink);}
 #scene{position:absolute;inset:0;touch-action:none;}#scene canvas{touch-action:none;}
 button{font-family:inherit;}
 #topbar{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:14px;
-padding:env(safe-area-inset-top,0px) 12px 0;background:linear-gradient(#f2ead6,#e0d2ae);border-bottom:3px solid var(--brass);
-box-shadow:0 2px 10px rgba(0,0,0,.5);z-index:10;overflow-x:auto;white-space:nowrap;
-box-sizing:content-box;}
+padding:0 12px;background:linear-gradient(#f2ead6,#e0d2ae);border-bottom:3px solid var(--brass);
+box-shadow:0 2px 10px rgba(0,0,0,.5);z-index:10;overflow-x:auto;white-space:nowrap;}
 #topbar-extra{display:none;position:absolute;top:50px;left:0;right:0;z-index:10;
 background:linear-gradient(#f2ead6,#e0d2ae);border-bottom:2px solid var(--brass);
 padding:5px 12px;gap:14px;flex-wrap:nowrap;align-items:center;}
@@ -105,17 +104,19 @@ padding:5px 12px;gap:14px;flex-wrap:nowrap;align-items:center;}
 #topmore{display:none;background:none;border:1px solid var(--brass);border-radius:4px;
 color:#6d5c40;font-size:14px;cursor:pointer;padding:2px 7px;flex-shrink:0;margin-left:auto;}
 @media(max-width:599px){
-#topbar{height:46px;padding:env(safe-area-inset-top,0px) 8px 0;gap:8px;overflow-x:hidden;flex-wrap:nowrap;}
+#topbar{height:46px;padding:0 8px;gap:8px;overflow-x:hidden;flex-wrap:nowrap;}
 #topbar .stat .lbl{font-size:8px;letter-spacing:.08em;}
 #topbar .stat .val{font-size:13px;}
 #wagebtn{font-size:10px;padding:3px 8px;}
 #speedctl button{width:26px;height:22px;font-size:11px;}
 #topmore{display:block;}
 .stat-hideable{display:none;}
-#resbar{top:calc(46px + env(safe-area-inset-top,0px));}
-#topbar-extra{top:calc(96px + env(safe-area-inset-top,0px));}
-#hint{top:auto;bottom:60px;font-size:12px;max-width:78vw;}
-#toast{top:calc(82px + env(safe-area-inset-top,0px));}}
+#resbar{top:46px;}
+#topbar-extra{top:76px;}
+#hint{position:fixed !important;top:auto !important;bottom:60px;left:50%;
+  transform:translateX(-50%);max-width:80vw;font-size:12px;}
+#toast{top:82px;}
+}
 .stat{display:flex;align-items:baseline;gap:5px;}
 .stat .lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#6d5c40;}
 .stat .val{font-size:16px;font-weight:bold;font-variant-numeric:tabular-nums;}
@@ -126,17 +127,19 @@ border-radius:3px;cursor:pointer;}
 #speedctl button{font-size:11px;width:28px;height:24px;border:1px solid var(--brass);
 background:var(--paper);cursor:pointer;border-radius:3px;}
 #speedctl button.on{background:var(--brass);color:#fff;}
-#resbar{position:absolute;top:calc(50px + env(safe-area-inset-top,0px));left:0;right:0;height:30px;display:flex;align-items:center;
+#resbar{position:absolute;top:50px;left:0;right:0;height:30px;display:flex;align-items:center;
 gap:14px;padding:0 12px;background:rgba(28,22,16,.88);z-index:9;overflow-x:auto;white-space:nowrap;}
 .res{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--paper);}
 .res .dot{width:11px;height:11px;border-radius:3px;border:1px solid rgba(255,255,255,.4);}
 .res .num{font-variant-numeric:tabular-nums;font-weight:bold;}
 .res .flow{font-size:10px;color:#9b8c6c;}
 #buildpanel{position:absolute;left:0;right:0;bottom:0;z-index:9;background:linear-gradient(#f2ead6,#e6d9ba);
-padding-bottom:env(safe-area-inset-bottom,0px);
-border-top:2px solid var(--brass);transform:translateY(calc(100% - 42px - env(safe-area-inset-bottom,0px)));transition:transform .22s;}#buildpanel.open{transform:translateY(0);}
-#paneltoggle{display:block;width:100%;padding:9px;font-size:12px;letter-spacing:.16em;
-text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;cursor:pointer;height:40px;box-sizing:border-box;}
+border-top:2px solid var(--brass);}
+#paneltoggle{display:block;width:100%;height:40px;line-height:40px;padding:0 12px;font-size:12px;
+letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--paper);
+border:none;cursor:pointer;box-sizing:border-box;text-align:center;}
+#buildpanel-body{max-height:0;overflow:hidden;transition:max-height .22s ease;}
+#buildpanel.open #buildpanel-body{max-height:55vh;overflow-y:auto;}
 #bcats{display:flex;gap:6px;padding:8px 10px 0;flex-wrap:wrap;}
 #bcats button{font-size:11px;padding:5px 12px;border:1px solid var(--brass);background:var(--paper);
 border-radius:14px;cursor:pointer;}
@@ -235,9 +238,9 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
 #endwrap p{margin:16px auto;max-width:480px;line-height:1.6;font-size:15px;}
 #endwrap button{font-size:14px;padding:12px 32px;background:var(--brass);color:#fff;border:none;border-radius:4px;cursor:pointer;}
 @media(min-width:900px){
-#buildpanel{left:10px;right:auto;bottom:auto;top:92px;width:236px;transform:none;border:2px solid var(--brass);border-radius:6px;}
+#buildpanel{left:10px;right:auto;bottom:auto;top:92px;width:236px;border:2px solid var(--brass);border-radius:6px;}
 #paneltoggle{display:none;}
-#blist{display:block;max-height:42vh;overflow-y:auto;padding:8px;}
+#buildpanel-body{max-height:42vh;overflow-y:auto;}
 .bitem{width:auto;margin-bottom:6px;}
 #hint{top:auto;bottom:14px;}
 }
@@ -323,9 +326,11 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
 </div>
 <div id="buildpanel">
 <button id="paneltoggle">▲ Construction Ledger</button>
+<div id="buildpanel-body">
 <div id="bcats"></div>
 <div id="blist"></div>
 <button id="demolish">⛏ Clear / Demolish</button>
+</div>
 </div>
 <div id="bulb" class="fab">💡<span class="tip">Research ready</span></div>
 <div id="mail" class="fab">✉<span class="tip">Correspondence</span></div>
@@ -1863,11 +1868,9 @@ $('letclose').onclick=()=>{$('letter').style.display='none';G.resume();};
 var FAB_STACK_ORDER=['bulb','mail','financefab','contractsfab','landfab','rivalfab','personnelfab','patentsfab','almanacfab','journalfab'];
 function layoutFabStack(){
 if(!FAB_STACK_ORDER)return;
-const safeTop=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sat')||'0')||0;
-const TOPBAR_H=50+safeTop,BASE_MARGIN=14;
+const TOPBAR_H=50,BASE_MARGIN=14;
 // Add iOS safe area inset so FABs clear the home indicator in fullscreen PWA mode
-const safeBottom=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sab')||'0')||0;
-const MARGIN=BASE_MARGIN+safeBottom;
+const MARGIN=BASE_MARGIN;
 const narrow=innerWidth<480;
 const MAX_SIZE=narrow?52:74,MIN_SIZE=narrow?28:34,MAX_GAP=narrow?6:10,MIN_GAP=narrow?3:4;
 const visible=FAB_STACK_ORDER.map(id=>$(id)).filter(el=>el&&el.style.display==='flex');
@@ -1961,7 +1964,7 @@ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;
 camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 </script>
 <style>
-#inspector{position:absolute;right:12px;top:calc(92px + env(safe-area-inset-top,0px));width:230px;z-index:12;display:none;
+#inspector{position:absolute;right:12px;top:92px;width:230px;z-index:12;display:none;
 background:linear-gradient(#f6efdc,#e8dcbd);border:2px solid var(--brass);border-radius:6px;
 box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:13px;}
 #inspector h4{background:var(--ink);color:var(--paper);padding:8px 12px;font-size:14px;}
