@@ -1976,13 +1976,16 @@ border-radius:3px;cursor:pointer;}
 border:1px solid #c9b88e;border-radius:5px;resize:vertical;}
 #keyshint{position:absolute;left:12px;bottom:10px;z-index:8;font-size:10px;color:#cfc2a4;
 text-shadow:0 1px 3px #000;letter-spacing:.05em;pointer-events:none;}
-@media(max-width:899px){#keyshint{display:none;}#inspector{top:auto;bottom:46px;right:8px;width:200px;}}
+@media(max-width:899px){#keyshint{display:none;}#inspector{top:auto;bottom:46px;right:8px;width:200px;max-height:60vh;overflow-y:auto;}}
 @media(max-width:479px){
 #inspector{width:160px;font-size:11px;}
 #inspector .row{padding:4px 8px;}
 .modal .body{font-size:13px;}
 .modal header h3{font-size:16px;}
 #finmod .fintab{font-size:11px;padding:5px 10px;}
+.rf-btn{font-size:10px;padding:4px 6px;}
+.research-inspector{padding:6px 8px;}
+#ri-proglabel{font-size:9px;}
 }
 </style>
 <div id="inspector"><h4 id="insname">—<button class="close" id="insclose">✕</button></h4>
@@ -1997,10 +2000,10 @@ text-shadow:0 1px 3px #000;letter-spacing:.05em;pointer-events:none;}
 </div>
 <div id="research-inspector" style="display:none;" class="research-inspector">
 <span class="ri-label">Research Funding</span>
-<button class="rf-btn" data-fund="0">Off — no research this week</button>
-<button class="rf-btn" data-fund="15">Modest — $15/wk · steady pace</button>
-<button class="rf-btn" data-fund="40">Serious — $40/wk · unlock up to 3 yrs early</button>
-<button class="rf-btn" data-fund="80">Aggressive — $80/wk · unlock up to 6 yrs early</button>
+<button class="rf-btn" data-fund="0">Off</button>
+<button class="rf-btn" data-fund="15">Modest — $15/wk</button>
+<button class="rf-btn" data-fund="40">Serious — $40/wk · 4 yrs early</button>
+<button class="rf-btn" data-fund="80">Aggressive — $80/wk · 8 yrs early</button>
 <div class="research-progress-wrap"><div class="research-progress-bar" id="ri-progbar" style="width:0%"></div></div>
 <div class="research-progress-label" id="ri-proglabel">0 / 25 research points toward next breakthrough</div>
 </div>
@@ -2597,6 +2600,7 @@ document.title='Iron Horizon: Director\u2019s Cut';
 #journalmod header .eyebrow{font-size:11px;color:#8a6a2a;letter-spacing:.18em;}
 #journalmod header h3{font-size:18px;color:#3a2a0e;margin:4px 0 0;}
 #journalmod #journal-body{font-size:14px;line-height:1.75;color:#2a1e0e;font-style:italic;padding:4px 0 8px;}
+@media(max-width:599px){#journalmod #journal-body{font-size:13px;line-height:1.65;}}
 #journalmod .journal-meta{font-size:11px;color:#8a6a2a;margin-bottom:12px;font-style:normal;letter-spacing:.06em;}
 #journalhistmod .modal{width:min(560px,94vw);}
 #journalhistmod .journal-entry{border-bottom:1px solid #d8c9a2;padding:10px 0;}
