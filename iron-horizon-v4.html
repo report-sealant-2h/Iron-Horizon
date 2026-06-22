@@ -97,15 +97,22 @@ button{font-family:inherit;}
 #topbar{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;gap:14px;
 padding:0 12px;background:linear-gradient(#f2ead6,#e0d2ae);border-bottom:3px solid var(--brass);
 box-shadow:0 2px 10px rgba(0,0,0,.5);z-index:10;overflow-x:auto;white-space:nowrap;}
-@media(max-width:479px){
-#topbar{height:auto;flex-wrap:wrap;padding:4px 8px;gap:4px 10px;overflow-x:visible;white-space:normal;}
-#topbar .stat .lbl{font-size:8px;}
+#topbar-extra{display:none;position:absolute;top:50px;left:0;right:0;z-index:10;
+background:linear-gradient(#f2ead6,#e0d2ae);border-bottom:2px solid var(--brass);
+padding:5px 12px;gap:14px;flex-wrap:nowrap;align-items:center;}
+#topbar-extra.open{display:flex;}
+#topmore{display:none;background:none;border:1px solid var(--brass);border-radius:4px;
+color:#6d5c40;font-size:14px;cursor:pointer;padding:2px 7px;flex-shrink:0;margin-left:auto;}
+@media(max-width:599px){
+#topbar{height:46px;padding:0 8px;gap:8px;overflow-x:hidden;flex-wrap:nowrap;}
+#topbar .stat .lbl{font-size:8px;letter-spacing:.08em;}
 #topbar .stat .val{font-size:13px;}
 #wagebtn{font-size:10px;padding:3px 8px;}
-#speedctl{margin-left:auto;}
-#speedctl button{width:26px;height:22px;}
-#resbar{top:58px;}
-#hint{top:96px;}}
+#speedctl button{width:26px;height:22px;font-size:11px;}
+#topmore{display:block;}
+.stat-hideable{display:none;}
+#resbar{top:46px;}
+#hint{top:92px;}}
 .stat{display:flex;align-items:baseline;gap:5px;}
 .stat .lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#6d5c40;}
 .stat .val{font-size:16px;font-weight:bold;font-variant-numeric:tabular-nums;}
@@ -124,8 +131,7 @@ gap:14px;padding:0 12px;background:rgba(28,22,16,.88);z-index:9;overflow-x:auto;
 .res .flow{font-size:10px;color:#9b8c6c;}
 #buildpanel{position:absolute;left:0;right:0;bottom:0;z-index:9;background:linear-gradient(#f2ead6,#e6d9ba);
 padding-bottom:env(safe-area-inset-bottom,0px);
-border-top:2px solid var(--brass);transform:translateY(calc(100% - 38px));transition:transform .22s;}
-#buildpanel.open{transform:translateY(0);}
+border-top:2px solid var(--brass);transform:translateY(calc(100% - 38px - env(safe-area-inset-bottom,0px)));transition:transform .22s;}#buildpanel.open{transform:translateY(0);}
 #paneltoggle{display:block;width:100%;padding:9px;font-size:12px;letter-spacing:.16em;
 text-transform:uppercase;background:var(--ink);color:var(--paper);border:none;cursor:pointer;}
 #bcats{display:flex;gap:6px;padding:8px 10px 0;flex-wrap:wrap;}
@@ -155,8 +161,13 @@ animation:pulse 1.6s ease-in-out infinite;}
 .fab.pulse{animation:pulse 1.6s ease-in-out infinite;}
 #mail{background:radial-gradient(circle at 35% 30%,#fdfdf8,#d8cfb2 60%,#a89a72);}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.fab .tip{position:absolute;top:78px;left:50%;transform:translateX(-50%);font-size:9px;
-letter-spacing:.1em;text-transform:uppercase;color:var(--paper);white-space:nowrap;text-shadow:0 1px 3px #000;}
+.fab .tip{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);
+font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--paper);
+white-space:nowrap;text-shadow:0 1px 3px #000;background:rgba(15,11,8,.65);
+padding:3px 8px;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .15s;}
+.fab:hover .tip{opacity:1;}
+/* Only show tip labels on devices that support true hover (desktops); on touch devices they fire on tap and look broken */
+@media(hover:none),(pointer:coarse){.fab .tip{display:none;}}
 .modalwrap{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
 background:rgba(15,11,8,.74);padding:14px;}
 .modal{width:min(580px,94vw);max-height:88vh;overflow-y:auto;background:linear-gradient(#f6efdc,#e8dcbd);
@@ -286,13 +297,19 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
 <div id="topbar">
 <div class="stat"><span class="lbl">Treasury</span><span class="val" id="money">$0</span></div>
 <div class="stat"><span class="lbl">Net</span><span class="val" id="income">$0/wk</span></div>
-<div class="stat"><span class="lbl">Workers</span><span class="val" id="workers">0/0</span></div>
-<div class="stat"><span class="lbl">Morale</span><span class="val" id="morale">—</span></div>
-<button id="wagebtn">Wages: $—</button>
+<div class="stat stat-hideable"><span class="lbl">Workers</span><span class="val" id="workers">0/0</span></div>
+<div class="stat stat-hideable"><span class="lbl">Morale</span><span class="val" id="morale">—</span></div>
+<button id="wagebtn" class="stat-hideable">Wages: $—</button>
 <div class="stat"><span class="lbl">Date</span><span class="val" id="date">Jan 1850</span></div>
+<button id="topmore" onclick="document.getElementById('topbar-extra').classList.toggle('open')">⋯</button>
 <div id="speedctl">
 <button data-s="0">⏸</button><button data-s="1" class="on">▶</button><button data-s="3">▶▶</button><button data-s="8">▶▶▶</button>
 </div>
+</div>
+<div id="topbar-extra">
+<div class="stat"><span class="lbl">Workers</span><span class="val" id="workers2">0/0</span></div>
+<div class="stat"><span class="lbl">Morale</span><span class="val" id="morale2">—</span></div>
+<button id="wagebtn2">Wages: $—</button>
 </div>
 <div id="resbar">
 <div class="res"><span class="dot" style="background:#3a3a3a"></span>Coal <span class="num" id="r-coal">0</span><span class="flow" id="f-coal"></span></div>
@@ -384,6 +401,25 @@ const ERAS=[{t:1,name:'Steam & Steel',year:1858},{t:2,name:'Precision Optics',ye
 {t:5,name:'The Motor Century',year:1908},{t:6,name:'Conquest of the Air',year:1919},
 {t:7,name:'The Rocket Age',year:1938}];
 
+const RESEARCHER_NAMES=['Dr. Emmeline Voss','Prof. Heinrich Kral','Dr. Beatrice Marsh',
+'Prof. Albrecht Stern','Dr. Constance Hull','Prof. Otto Berger','Dr. Agnes Whitmore','Prof. Franz Lenz'];
+
+const JOURNAL_ENTRIES={
+1:{era:'Steam & Steel',
+entry:'The boiler pressure held at forty pounds per square inch for eleven hours without incident. Foreman Gruber wept, which I found embarrassing and then moving. We have harnessed steam in a form fit for industry. The age of iron and fire begins in earnest. I have instructed the foundry to begin retooling at once.'},
+2:{era:'Precision Optics',
+entry:'Ground the final lens element before dawn. When I held it to the workshop window, the machinery across the yard appeared close enough to touch. Precision at this scale changes everything — the scientific instrument, the surveyor, the clockmaker. We can now see and measure with an exactness that would have seemed occult to our grandfathers.'},
+3:{era:'The Electric Dawn',
+entry:'The dynamo ran through the night without interruption. By morning the entire laboratory floor was lit by electric arc — cold, steady, extraordinary. I wired the Director with three words: the lights hold. Gas lamps will seem barbaric within a generation. What we have done here today will outlast every building in this city.'},
+4:{era:'Rubber & Road',
+entry:'Dunlop\'s pneumatic principle, scaled to our vulcanisation process, has solved the road. The vehicle no longer shakes the teeth from your skull. Motion has become comfortable, and comfortable motion will change where people live and how they travel between those places. The city and the countryside are about to become neighbours.'},
+5:{era:'The Motor Century',
+entry:'One hundred vehicles a day off the line. The foremen laughed when we proposed the moving assembly, but the numbers do not argue. Mass production is not a manufacturing method — it is a social fact. The motorcar will cease to be a luxury before this decade closes. We are building the century\'s defining object.'},
+6:{era:'Conquest of the Air',
+entry:'The Armistice brought the engineers home, and they brought their knowledge with them. We have adapted the aeroplane engine to civilian purpose. The Atlantic is now a matter of hours, not weeks. I am not certain humanity is prepared for a world without distances. Our laboratory made something inevitable that was previously only imaginable.'},
+7:{era:'The Rocket Age',
+entry:'The gantry stands. The mathematics are correct — I have checked them four times and had my assistant check them twice more. What we will launch from this yard will leave the atmosphere. Whether it carries instruments or ambitions beyond that boundary depends on men above my station. My work here is complete. The century closes with fire and the promise of something larger than any century.'}};
+
 const CAT=[
 {id:'road',cat:'Infrastructure',name:'Road',cost:12,color:0x8d8578,h:.06,tech:0,road:true,
  desc:'Connects buildings to your office.'},
@@ -399,6 +435,8 @@ const CAT=[
  desc:'Shore plant. Serves up to 40 buildings across the entire city.'},
 {id:'fire',cat:'Infrastructure',name:'Fire Brigade',cost:300,color:0xa03426,h:1.7,tech:1,workers:3,upkeep:12,fireRadius:5,
  desc:'Douses flames before they spread.'},
+{id:'research',cat:'Infrastructure',name:'Research Centre',cost:1200,color:0x7a6a8a,h:2.2,tech:0,workers:6,upkeep:12,
+ desc:'Fund scientific research to accelerate industrial progress. Set your weekly research budget in the inspector to unlock new eras early.'},
 {id:'power',cat:'Infrastructure',name:'Steam Power Plant',cost:1500,color:0x424a52,h:3.0,tech:3,workers:8,upkeep:20,inputs:{coal:4},powerSrc:true,radius:7,cap:10,
  desc:'Coal-fired. Electrifies up to 10 buildings (+30% output). Transformers extend reach.'},
 {id:'xfmr',cat:'Infrastructure',name:'Transformer',cost:320,color:0x5d676f,h:1.4,tech:3,needsPower:true,radius:5,upkeep:4,powerExt:true,
@@ -628,6 +666,7 @@ patents:{},patentOffers:[],
 almanac:[],almanacBonus:{},insured:false,
 contamination:[],meltdownPending:false,
 waterCovered:new Set(),powerCovered:new Set(),
+researchFunding:0,researchPts:0,researchJournal:[],researcherName:'',
 rival:{money:0,buildings:[],sellPrices:{coal:4,iron:6,steel:14,rubber:8,tires:12}}};
 /* ---------------- land cell model ----------------
    S.grid is a Map keyed by "x_z" strings, holding only occupied cells
@@ -1103,9 +1142,10 @@ for(const b of productive){
 for(const src of sources){
 const direct=MDIST(src,b);
 if(direct<=src.def.radius){pairs.push({b,src,dist:direct});continue;}
-// relay bridge: src→relay within src.radius AND relay→b within relay.radius
+// relay bridge: allow the tower to be placed AT or just beyond the source radius (1 tile slack)
+// so a tower at the edge of pump coverage correctly extends it rather than creating a dead zone
 for(const rel of relays){
-if(MDIST(src,rel)<=src.def.radius&&MDIST(rel,b)<=(rel.def.radius||0)){
+if(MDIST(src,rel)<=src.def.radius+1&&MDIST(rel,b)<=(rel.def.radius||0)){
 pairs.push({b,src,dist:direct});break;}}}}
 // Sort closest-first so nearest buildings always get served when capacity is tight
 pairs.sort((a,b)=>a.dist-b.dist);
@@ -1660,6 +1700,103 @@ $('newshead').textContent=paper.h;$('newsbody').textContent=paper.b;
 $('news').style.display='flex';G.pause();
 toast('🔓 '+era.name+' — new blueprints in the ledger!');}
 
+/* ===== RESEARCH CENTRE SYSTEM ===== */
+const RESEARCH_PTS_NEEDED=25; // legacy — used as display baseline only
+// Per-era research thresholds scaled to historical development time (1/3 of actual gap at 1pt/wk)
+// Modest ($15/wk, 1pt/wk): takes ~histYears/3 game-years per era, following calendar closely
+// Serious ($40/wk, 2.67pt/wk): roughly 1-2 years per era, unlocks 4 years early
+// Aggressive ($80/wk, 5.33pt/wk): roughly 0.5-1 year per era, unlocks 8 years early
+const ERA_RESEARCH_THRESHOLDS={1:128,2:224,3:224,4:192,5:160,6:176,7:304};
+const RESEARCH_EARLY_YEARS={0:0,15:0,40:4,80:8};
+
+function setResearchFunding(amt){
+S.researchFunding=amt;
+refreshResearchInspector();
+// update ledger immediately so finance modal reflects it
+S.ledger&&(S.ledger.research=amt>0?-amt:0);}
+
+function checkResearchProgress(){
+if(S.tech>=7)return;
+const centre=S.placed.find(p=>p.def.id==='research'&&p.connected);
+if(!centre||!S.researchFunding)return;
+// Accumulate points proportional to funding
+S.researchPts+=(S.researchFunding/15);
+const nextEra=ERAS.find(e=>e.t===S.tech+1);
+if(!nextEra)return;
+// Soft calendar gate: aggressive funding can unlock up to N years early
+const earlyYrs=RESEARCH_EARLY_YEARS[S.researchFunding]||0;
+const minYear=nextEra.year-earlyYrs;
+// Building prerequisite still required
+const need={1:'bikes',2:'locos',3:'optics',4:'power',5:'tireworks',6:'autos',7:'planes'}[nextEra.t];
+const hasNeed=!need||S.placed.some(p=>p.kind===need&&p.connected);
+const threshold=ERA_RESEARCH_THRESHOLDS[nextEra.t]||RESEARCH_PTS_NEEDED;
+// Breakthrough!
+if(S.researchPts>=threshold){
+// Cap so points don't pile up indefinitely while waiting for a gate
+S.researchPts=Math.min(S.researchPts, threshold);
+// If blocked, tell the player exactly why
+if(year()<minYear){
+toast('Research ready ('+threshold+' pts) — awaiting '+nextEra.name+' era ('+minYear+'). Increase funding to unlock sooner.');return;}
+if(!hasNeed){
+const needDef=CAT.find(c=>c.id===need);
+toast('Research ready — build and connect a '+(needDef?needDef.name:need)+' to trigger the '+nextEra.name+' breakthrough.');return;}
+S.researchPts=0;
+// Remove from quiz queue to avoid double-unlock
+S.quizQueue=S.quizQueue.filter(t=>t!==nextEra.t);
+showBulb();
+// Fire breakthrough after a tick so the week finishes cleanly
+setTimeout(()=>{fireResearchBreakthrough(nextEra);},50);}}
+
+function fireResearchBreakthrough(era){
+// Assign researcher name on first breakthrough
+if(!S.researcherName)S.researcherName=RESEARCHER_NAMES[Math.floor(Math.random()*RESEARCHER_NAMES.length)];
+// Record in journal
+const entry={tech:era.t,era:era.name,date:MONTHS[Math.floor((S.week%48)/4)]+' '+year(),
+researcher:S.researcherName,text:JOURNAL_ENTRIES[era.t].entry};
+S.researchJournal.push(entry);
+// Unlock the tech (shows the newspaper)
+unlockTech(era.t);
+// Show journal after the newspaper closes (give player a moment)
+setTimeout(()=>showJournalBreakthrough(entry),200);
+showJournalFab();}
+
+function showJournalBreakthrough(entry){
+$('journal-researcher').textContent=entry.researcher;
+$('journal-era').textContent=entry.era;
+$('journal-date').textContent=entry.date+' — Personal Research Journal';
+$('journal-body').textContent=entry.text;
+$('journalmod').style.display='flex';
+G.pause();}
+
+function showJournalHistory(){
+if(!S.researchJournal.length){
+toast('No breakthroughs recorded yet — fund the Research Centre to begin.');return;}
+const body=$('journalhist-body');
+body.innerHTML=S.researchJournal.slice().reverse().map(e=>
+'<div class="journal-entry"><h5>'+e.era+' — '+e.date+'</h5>'+
+'<div style="font-size:10px;color:#8a6a2a;margin-bottom:4px;">'+e.researcher+'</div>'+
+'<p>'+e.text+'</p></div>').join('');
+$('journalhistmod').style.display='flex';
+G.pause();}
+
+function showJournalFab(){
+$('journalfab').style.display=S.researchJournal.length?'flex':'none';
+layoutFabStack();}
+
+function refreshResearchInspector(){
+if(!$('research-inspector'))return;
+document.querySelectorAll('.rf-btn').forEach(b=>{
+b.classList.toggle('on',parseInt(b.dataset.fund)===S.researchFunding);});
+const nextEra=ERAS.find(e=>e.t===(S.tech+1));
+const threshold=nextEra?(ERA_RESEARCH_THRESHOLDS[nextEra.t]||RESEARCH_PTS_NEEDED):RESEARCH_PTS_NEEDED;
+const pct=Math.min(100,Math.round((S.researchPts/threshold)*100));
+$('ri-progbar').style.width=pct+'%';
+const earlyYrs=RESEARCH_EARLY_YEARS[S.researchFunding]||0;
+let label=Math.round(S.researchPts)+' / '+threshold+' pts toward '+(nextEra?nextEra.name:'max tech');
+if(earlyYrs>0&&nextEra)label+=' (unlocks up to '+earlyYrs+' yrs early)';
+if(!S.researchFunding)label='Set a funding level to begin research.';
+$('ri-proglabel').textContent=label;}
+
 function launchRocket(){S.won=true;
 const g=S.placed.find(p=>p.kind==='gantry');
 if(g&&g.mesh.userData.rocket){S.launching={parts:g.mesh.userData.rocket,vy:0,t:0,
@@ -1709,6 +1846,7 @@ b.classList.toggle('on',+b.dataset.s===S.speed));}
 
 $('wagebtn').onclick=()=>{$('wageslider').value=S.wage;wageUI();
 $('wagemod').style.display='flex';G.pause();};
+if($('wagebtn2'))$('wagebtn2').onclick=$('wagebtn').onclick;
 $('wageslider').oninput=()=>{S.wage=+$('wageslider').value;wageUI();refreshTop();};
 function wageUI(){$('wageval').textContent='$'+S.wage;
 $('wageexpect').textContent='~$'+expectedWage();
@@ -1719,8 +1857,9 @@ $('wageclose').onclick=()=>{$('wagemod').style.display='none';G.resume();};
 $('newsclose').onclick=()=>{$('news').style.display='none';G.resume();};
 $('letclose').onclick=()=>{$('letter').style.display='none';G.resume();};
 
-const FAB_STACK_ORDER=['bulb','mail','financefab','contractsfab','landfab','rivalfab','personnelfab','patentsfab','almanacfab'];
+var FAB_STACK_ORDER=['bulb','mail','financefab','contractsfab','landfab','rivalfab','personnelfab','patentsfab','almanacfab','journalfab'];
 function layoutFabStack(){
+if(!FAB_STACK_ORDER)return;
 const TOPBAR_H=50,BASE_MARGIN=14;
 // Add iOS safe area inset so FABs clear the home indicator in fullscreen PWA mode
 const safeBottom=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sab')||'0')||0;
@@ -1752,6 +1891,10 @@ $('morale').textContent=Math.round(S.morale)+'%'+(S.strikeWeeks>0?' ⚠':'');
 $('morale').style.color=S.morale>=50?'inherit':'var(--red)';
 $('wagebtn').textContent='Wages: $'+S.wage;
 $('date').textContent=MONTHS[Math.floor((S.week%48)/4)]+' '+year();
+// Mirror to mobile secondary row if present
+if($('workers2')){$('workers2').textContent=sup+'/'+dem;$('workers2').style.color=$('workers').style.color;}
+if($('morale2')){$('morale2').textContent=$('morale').textContent;$('morale2').style.color=$('morale').style.color;}
+if($('wagebtn2'))$('wagebtn2').textContent='Wages: $'+S.wage;
 layoutFabStack();}
 function refreshRes(){
 for(const k of['coal','iron','steel','rubber','tires']){
@@ -1779,6 +1922,7 @@ d.onclick=()=>{CITY=c;document.querySelectorAll('.city').forEach(x=>x.classList.
 box.appendChild(d);});})();
 $('startbtn').onclick=()=>{
 S.money=CITY.cash;genTerrain();placeHQ();
+S.researcherName=RESEARCHER_NAMES[Math.floor(Math.random()*RESEARCHER_NAMES.length)];
 resizePlotToClaimedBounds();offerExpansionPlots();
 rebuildRivalVisuals();
 $('intro').style.display='none';S.started=true;
@@ -1850,6 +1994,15 @@ text-shadow:0 1px 3px #000;letter-spacing:.05em;pointer-events:none;}
 <div id="insspectext" style="font-size:12px;color:#5d4d33;margin-bottom:6px;">No specialist assigned.</div>
 <select id="insspecsel" style="width:100%;font-size:12px;padding:5px;margin-bottom:6px;display:none;"></select>
 <button id="insspecbtn" style="display:none;width:100%;margin:0;padding:6px;font-size:12px;border:1px solid var(--brass);background:var(--paper);border-radius:4px;cursor:pointer;">Assign</button>
+</div>
+<div id="research-inspector" style="display:none;" class="research-inspector">
+<span class="ri-label">Research Funding</span>
+<button class="rf-btn" data-fund="0">Off — no research this week</button>
+<button class="rf-btn" data-fund="15">Modest — $15/wk · steady pace</button>
+<button class="rf-btn" data-fund="40">Serious — $40/wk · unlock up to 3 yrs early</button>
+<button class="rf-btn" data-fund="80">Aggressive — $80/wk · unlock up to 6 yrs early</button>
+<div class="research-progress-wrap"><div class="research-progress-bar" id="ri-progbar" style="width:0%"></div></div>
+<div class="research-progress-label" id="ri-proglabel">0 / 25 research points toward next breakthrough</div>
 </div>
 <button id="inssalvage">⛏ Salvage (half cost)</button></div>
 <div class="modalwrap" id="savemodal"><div class="modal">
@@ -2189,6 +2342,9 @@ $('bwater').className='badge'+(S.waterCovered&&S.waterCovered.has(rec.gx+'_'+rec
 $('bpower').className='badge'+(S.powerCovered&&S.powerCovered.has(rec.gx+'_'+rec.gz)?' on':'');
 $('bfire').className='badge'+(fireCovered(rec)?' on':'');
 refreshInspectorSpecialist(rec);
+// Research Centre: show funding section
+const ri=$('research-inspector');
+if(ri){ri.style.display=rec.def.id==='research'?'block':'none';if(rec.def.id==='research')refreshResearchInspector();}
 $('inspector').style.display='block';
 clearInspectorRing();
 const rd=rec.def;const ringR=rd.radius||rd.fireRadius;
@@ -2296,6 +2452,7 @@ almanac:S.almanac,almanacBonus:S.almanacBonus,insured:S.insured,seenTips:S.seenT
 financeHistory:S.financeHistory,financeHistoryMonthly:S.financeHistoryMonthly,financeHistoryYearly:S.financeHistoryYearly,
 financeMonthAccum:S.financeMonthAccum,financeYearAccum:S.financeYearAccum,
 contamination:S.contamination,meltdownPending:S.meltdownPending,
+researchFunding:S.researchFunding,researchPts:S.researchPts,researchJournal:S.researchJournal,researcherName:S.researcherName,
 rival:{money:S.rival.money,sellPrices:S.rival.sellPrices,
 buildings:S.rival.buildings.map(b=>({id:b.id,gx:b.gx,gz:b.gz}))}},
 terr,claimed:[...S.claimed],placed:S.placed.map(p=>({k:p.kind,x:p.gx,z:p.gz,sw:p.shutdownWeeks||0}))}))));}
@@ -2357,12 +2514,16 @@ if(!d.s||d.s.financeYearAccum===undefined)S.financeYearAccum=null;
 if(!d.s||!d.s.contamination)S.contamination=[]; // old save predates nuclear contamination
 if(d.s&&d.s.meltdownPending===undefined)S.meltdownPending=false;
 S.waterCovered=new Set();S.powerCovered=new Set(); // recomputed on first week tick
+if(!d.s||!d.s.researchJournal)S.researchJournal=[];
+if(!d.s||d.s.researchFunding===undefined)S.researchFunding=0;
+if(!d.s||d.s.researchPts===undefined)S.researchPts=0;
+if(!d.s||!d.s.researcherName)S.researcherName='';
 S.specialistOffers=[]; // recruitment board is ephemeral; refills naturally via the weekly roll
 S.started=true;S.ended=false;S.won=false;S.launching=null;
 $('intro').style.display='none';
 resizePlotToClaimedBounds();offerExpansionPlots();
 rebuildRivalVisuals();resetTraffic();
-computeConnectivity();buildCats();buildList();refreshTop();refreshRes();showBulb();showPersonnelFab();showPatentsFab();showAlmanacFab();
+computeConnectivity();buildCats();buildList();refreshTop();refreshRes();showBulb();showPersonnelFab();showPatentsFab();showAlmanacFab();showJournalFab();
 if(covOn)buildCoverage();
 buildContaminationOverlay();
 toast('The ledgers are restored. '+CITY.name+', '+(1850+Math.floor(S.week/48))+'.');}
@@ -2431,6 +2592,27 @@ document.title='Iron Horizon: Director\u2019s Cut';
 #financefab{background:radial-gradient(circle at 35% 30%,#fdfdf8,#cdd8c0 60%,#6a8a72);}
 #contractsfab{background:radial-gradient(circle at 35% 30%,#fdfdf8,#d8c2a8 60%,#a87a4a);}
 #finmod .modal{width:min(640px,94vw);}
+#journalmod .modal{background:linear-gradient(#f8f2e0,#ece2c4);border:3px solid #8a6a2a;font-family:Georgia,'Times New Roman',serif;width:min(560px,94vw);}
+#journalmod header{border-bottom:2px solid #c8a84a;padding-bottom:10px;}
+#journalmod header .eyebrow{font-size:11px;color:#8a6a2a;letter-spacing:.18em;}
+#journalmod header h3{font-size:18px;color:#3a2a0e;margin:4px 0 0;}
+#journalmod #journal-body{font-size:14px;line-height:1.75;color:#2a1e0e;font-style:italic;padding:4px 0 8px;}
+#journalmod .journal-meta{font-size:11px;color:#8a6a2a;margin-bottom:12px;font-style:normal;letter-spacing:.06em;}
+#journalhistmod .modal{width:min(560px,94vw);}
+#journalhistmod .journal-entry{border-bottom:1px solid #d8c9a2;padding:10px 0;}
+#journalhistmod .journal-entry:last-child{border-bottom:none;}
+#journalhistmod .journal-entry h5{font-size:13px;color:#5d4a2a;margin:0 0 4px;font-family:Georgia,serif;}
+#journalhistmod .journal-entry p{font-size:12px;color:#3a2e1e;line-height:1.6;font-style:italic;margin:0;}
+.research-inspector{padding:8px 12px;border-top:1px solid #d8c9a2;margin-top:4px;}
+.research-inspector .ri-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6d5c40;margin-bottom:6px;display:block;}
+.rf-btn{font-size:11px;padding:5px 8px;background:var(--paper2);border:1px solid #c9b88e;
+border-radius:3px;cursor:pointer;text-align:left;color:#3a2e1e;display:block;width:100%;margin-bottom:3px;
+border-left:3px solid transparent;transition:background .15s;}
+.rf-btn.on{background:#6b4f1a;color:#fff;border-color:#6b4f1a;border-left-color:#f0c84a;font-weight:600;}
+.rf-btn:hover:not(.on){background:#d8c9a2;}
+.research-progress-wrap{background:#e6d9ba;border-radius:3px;height:5px;margin:6px 0 3px;overflow:hidden;}
+.research-progress-bar{height:5px;background:var(--brass);border-radius:3px;transition:width .4s;}
+.research-progress-label{font-size:10px;color:#6d5c40;}
 #finmod table{width:100%;font-size:13px;border-collapse:collapse;}
 #finmod td{padding:4px 6px;border-bottom:1px solid #ddcfa9;}
 #finmod td.num{text-align:right;font-variant-numeric:tabular-nums;}
@@ -2524,6 +2706,7 @@ padding-bottom:10px;border-bottom:1px dashed #c9b88e;}
 <div id="personnelfab" class="fab">🎓<span class="tip">Personnel</span></div>
 <div id="patentsfab" class="fab">🔬<span class="tip">Patents</span></div>
 <div id="almanacfab" class="fab">📖<span class="tip">Almanac</span></div>
+<div id="journalfab" class="fab">📓<span class="tip">Research Journal</span></div>
 
 <div class="modalwrap" id="finmod"><div class="modal">
 <header><div class="eyebrow">Mr. Pemberton's Ledger</div><h3>Weekly Finance Report</h3></header>
@@ -2627,6 +2810,23 @@ padding-bottom:10px;border-bottom:1px dashed #c9b88e;}
 <footer><button id="decisionB" class="decisionrisky"></button><button id="decisionA"></button></footer>
 </div></div>
 
+<!-- Research Journal breakthrough modal — pauses game, period voice entry -->
+<div class="modalwrap" id="journalmod"><div class="modal">
+<header><div class="eyebrow" id="journal-researcher">Research Journal</div><h3 id="journal-era">—</h3></header>
+<div class="body">
+<div class="journal-meta" id="journal-date"></div>
+<div id="journal-body"></div>
+</div>
+<footer><button id="journalclose">Close the Journal</button></footer>
+</div></div>
+
+<!-- Journal history modal — all past entries -->
+<div class="modalwrap" id="journalhistmod"><div class="modal">
+<header><div class="eyebrow">Research Laboratory</div><h3>Director's Research Journal</h3></header>
+<div class="body" id="journalhist-body"></div>
+<footer><button id="journalhistclose">Close</button></footer>
+</div></div>
+
 
 <script>
 /* ================= V2: FINANCE, CONTRACTS, LOGISTICS ================= */
@@ -2638,7 +2838,7 @@ const _stepWeek=stepWeek;
 stepWeek=function(){
 if(S.ended)return;
 const before=S.money;
-S.ledger={wages:0,upkeep:0,freight:0,sales:0,contractIncome:0,loanInterest:0,loanPay:0,specialistSalaries:0,patentIncome:0,patentFees:0,insurancePremium:0};
+S.ledger={wages:0,upkeep:0,freight:0,sales:0,contractIncome:0,loanInterest:0,loanPay:0,specialistSalaries:0,patentIncome:0,patentFees:0,insurancePremium:0,research:0};
 _stepWeek();
 // _stepWeek already applied net to S.money; we recompute a readable breakdown alongside it
 computeLedgerBreakdown();
@@ -2650,6 +2850,10 @@ checkPatents();
 maybeOfferPatent();
 checkSpecialistRetirement();
 maybeOfferSpecialist();
+// Research Centre: deduct funding and check for breakthrough
+if(S.researchFunding>0&&S.placed.some(p=>p.def.id==='research'&&p.connected)){
+S.money-=S.researchFunding;S.ledger.research=-S.researchFunding;}
+checkResearchProgress();
 // tick contamination timer and rebuild overlay if any expired
 if(S.contamination&&S.contamination.length){
 const before=S.contamination.length;
@@ -2808,6 +3012,12 @@ $('rivalfab').style.display='flex';
 layoutFabStack();
 $('financefab').onclick=()=>{renderFinance();switchFinTab('week');$('finmod').style.display='flex';G.pause();};
 $('finclose').onclick=()=>{$('finmod').style.display='none';G.resume();};
+$('journalclose').onclick=()=>{$('journalmod').style.display='none';G.resume();};
+$('journalhistclose').onclick=()=>{$('journalhistmod').style.display='none';G.resume();};
+$('journalfab').onclick=()=>showJournalHistory();
+// Wire research funding buttons — must happen after inspector HTML is in the DOM
+document.querySelectorAll('.rf-btn').forEach(b=>{
+b.onclick=()=>setResearchFunding(parseInt(b.dataset.fund));});
 
 /* ---------- contracts ---------- */
 const BUYERS=['Ashford Vale Council','Kohlberg Trading House','Lakemont Shipping Co.',
