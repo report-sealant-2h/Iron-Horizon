@@ -108,7 +108,8 @@ color:#6d5c40;font-size:14px;cursor:pointer;padding:2px 7px;flex-shrink:0;margin
 #topbar .stat .lbl{font-size:8px;letter-spacing:.08em;}
 #topbar .stat .val{font-size:13px;}
 #wagebtn{font-size:10px;padding:3px 8px;}
-#speedctl button{width:26px;height:22px;font-size:11px;}
+#speedctl{display:none;}
+#mobilepause{display:flex !important;align-items:center;justify-content:center;}
 #topmore{display:block;}
 .stat-hideable{display:none;}
 #resbar{top:46px;}
@@ -308,6 +309,10 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
 <button id="wagebtn" class="stat-hideable">Wages: $—</button>
 <div class="stat"><span class="lbl">Date</span><span class="val" id="date">Jan 1850</span></div>
 <button id="topmore" onclick="document.getElementById('topbar-extra').classList.toggle('open')">⋯</button>
+<!-- Mobile: single pause/play toggle -->
+<button id="mobilepause" onclick="S.speed===0?G.resume():G.pause();syncSpeed();"
+  style="display:none;width:34px;height:28px;font-size:16px;border:1px solid var(--brass);
+  background:var(--paper);border-radius:4px;cursor:pointer;flex-shrink:0;">⏸</button>
 <div id="speedctl">
 <button data-s="0">⏸</button><button data-s="1" class="on">▶</button><button data-s="3">▶▶</button><button data-s="8">▶▶▶</button>
 </div>
@@ -316,6 +321,13 @@ background:rgba(10,8,6,.92);text-align:center;color:var(--paper);padding:20px;}
 <div class="stat"><span class="lbl">Workers</span><span class="val" id="workers2">0/0</span></div>
 <div class="stat"><span class="lbl">Morale</span><span class="val" id="morale2">—</span></div>
 <button id="wagebtn2">Wages: $—</button>
+<div style="margin-left:auto;display:flex;gap:3px;align-items:center;">
+<span style="font-size:9px;color:#6d5c40;letter-spacing:.1em;text-transform:uppercase;margin-right:4px;">Speed</span>
+<button data-s="0" onclick="S.speed=0;syncSpeed();" style="width:26px;height:22px;font-size:11px;border:1px solid var(--brass);background:var(--paper);border-radius:3px;cursor:pointer;">⏸</button>
+<button data-s="1" onclick="S.speed=1;syncSpeed();" style="width:26px;height:22px;font-size:11px;border:1px solid var(--brass);background:var(--paper);border-radius:3px;cursor:pointer;">▶</button>
+<button data-s="3" onclick="S.speed=3;syncSpeed();" style="width:26px;height:22px;font-size:11px;border:1px solid var(--brass);background:var(--paper);border-radius:3px;cursor:pointer;">▶▶</button>
+<button data-s="8" onclick="S.speed=8;syncSpeed();" style="width:26px;height:22px;font-size:11px;border:1px solid var(--brass);background:var(--paper);border-radius:3px;cursor:pointer;">▶▶▶</button>
+</div>
 </div>
 <div id="resbar">
 <div class="res"><span class="dot" style="background:#3a3a3a"></span>Coal <span class="num" id="r-coal">0</span><span class="flow" id="f-coal"></span></div>
@@ -1850,7 +1862,9 @@ sheet.classList.remove('open');$('paneltoggle').textContent='▲ Construction Le
 document.querySelectorAll('#speedctl button').forEach(b=>{
 b.onclick=()=>{S.speed=+b.dataset.s;S.prevSpeed=S.speed||S.prevSpeed;syncSpeed();};});
 function syncSpeed(){document.querySelectorAll('#speedctl button').forEach(b=>
-b.classList.toggle('on',+b.dataset.s===S.speed));}
+b.classList.toggle('on',+b.dataset.s===S.speed));
+const mp=document.getElementById('mobilepause');
+if(mp)mp.textContent=S.speed===0?'▶':'⏸';}
 
 $('wagebtn').onclick=()=>{$('wageslider').value=S.wage;wageUI();
 $('wagemod').style.display='flex';G.pause();};
